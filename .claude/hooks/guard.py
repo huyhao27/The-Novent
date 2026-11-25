@@ -12,6 +12,7 @@ Decisions: deny -> the edit does not happen and Claude reads the reason; ask -> 
 Test:  echo {"tool_name":"Edit","tool_input":{"file_path":"Assets/Scenes/A.unity"}} | python -I .claude/hooks/guard.py
 """
 import json
+import os
 import re
 import sys
 
@@ -93,6 +94,10 @@ def main():
         return
     tool_input = data.get("tool_input") or {}
     path = tool_input.get("file_path") or tool_input.get("notebook_path") or ""
+    root = os.environ.get("CLAUDE_PROJECT_DIR") or data.get("cwd") or os.getcwd()
+    if os.path.isabs(path):
+        # Match rules against the repo-relative path, so folders above the repo never trigger them.
+        path = os.path.relpath(path, root)
     decision, reason = decide(path, tool_input)
     if not decision:
         return

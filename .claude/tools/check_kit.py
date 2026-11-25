@@ -17,9 +17,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 KIT = os.path.join(ROOT, ".claude")
 MAX_DESC = 700
 MAX_BODY = 300
-MCP_TOOLS = ("refresh_unity|read_console|run_tests|get_test_job|manage_scene|find_gameobjects|"
-             "manage_gameobject|manage_components|manage_prefabs|manage_asset|manage_editor|"
-             "manage_scriptable_object|manage_tools|batch_execute|execute_menu_item|manage_script")
+MCP_TOOLS = ("apply_text_edits|batch_execute|create_script|delete_script|execute_code|execute_custom_tool|"
+             "execute_menu_item|find_gameobjects|find_in_file|get_sha|get_test_job|manage_animation|manage_asset|"
+             "manage_build|manage_camera|manage_components|manage_editor|manage_gameobject|manage_graphics|"
+             "manage_material|manage_packages|manage_physics|manage_prefabs|manage_probuilder|manage_profiler|"
+             "manage_scene|manage_script|manage_script_capabilities|manage_scriptable_object|manage_shader|"
+             "manage_texture|manage_tools|manage_ui|manage_vfx|read_console|refresh_unity|run_tests|"
+             "script_apply_edits|set_active_instance|unity_docs|unity_reflect|validate_script")
 BARE_TOOL = re.compile(r"(?<![\w_])(?<!mcp__UnityMCP__)`(" + MCP_TOOLS + r")`")
 MACHINE_PATH = re.compile(r"\b[A-Z]:[\\/](?!…)|/Users/|/home/")
 

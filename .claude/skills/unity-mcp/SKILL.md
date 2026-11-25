@@ -28,7 +28,7 @@ read the resource listing instances and pick the one whose path matches `pwd`). 
 Claude session keeps its own active instance.
 
 **Tool groups.** Only the core tools are registered by default. `mcp__UnityMCP__run_tests`/`mcp__UnityMCP__get_test_job`
-live in the `testing` group and `execute_code` in a scripting group; if a tool below is
+live in the `testing` group and `mcp__UnityMCP__execute_code` in a scripting group; if a tool below is
 missing, enable its group with `mcp__UnityMCP__manage_tools` rather than assuming it does
 not exist. Enable only what the task needs — every registered tool costs context.
 
@@ -58,7 +58,7 @@ Domain reload drops the connection for a few seconds; retry once, then wait.
 | Prefab open / edit / save | `mcp__UnityMCP__manage_prefabs` |
 | Search / create / move / rename assets (keeps `.meta` + GUIDs right) | `mcp__UnityMCP__manage_asset` (`search`, `create`, `move`, `rename`, `delete`, `get_info`) |
 | Set ScriptableObject fields | `mcp__UnityMCP__manage_scriptable_object` |
-| Create / patch a C# file with validation | `mcp__UnityMCP__manage_script` (`create`, `validate`, `apply_text_edits`) — plain `Edit` on `.cs` is fine too; then compile |
+| Create / patch a C# file with validation | `mcp__UnityMCP__manage_script` (`create`, `validate`, `mcp__UnityMCP__apply_text_edits`) — plain `Edit` on `.cs` is fine too; then compile |
 | Many small edits | `mcp__UnityMCP__batch_execute` — one round-trip instead of ten |
 | Menu command (e.g. custom tool, Addressables build) | `mcp__UnityMCP__execute_menu_item` |
 | Profiler / rendering stats | `mcp__UnityMCP__manage_profiler`, resource `get_rendering_stats` |
