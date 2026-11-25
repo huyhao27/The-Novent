@@ -53,6 +53,41 @@ namespace Novent.Tests.Core
         }
 
         [Test]
+        public void Load_CorruptSave_ThrowsAndKeepsPreviousSlot()
+        {
+            var store = new MemorySaveStore();
+            var service = new SaveService(store);
+            service.Load("world-1");
+            service.Set("station", new StationSaveData { tally = 5 });
+            store.Write("world-2", "{ not json");
+
+            Assert.Throws<System.InvalidOperationException>(() => service.Load("world-2"));
+
+            Assert.That(service.Slot, Is.EqualTo("world-1"));
+            Assert.That(service.TryGet<StationSaveData>("station", out var data) && data.tally == 5, Is.True);
+            Assert.That(store.TryRead("world-2", out var untouched) && untouched == "{ not json", Is.True);
+        }
+
+        [Test]
+        public void Load_VersionZero_Throws()
+        {
+            var store = new MemorySaveStore();
+            store.Write("world-1", "{\"version\":0,\"entries\":[]}");
+            var service = new SaveService(store);
+
+            Assert.Throws<System.InvalidOperationException>(() => service.Load("world-1"));
+        }
+
+        [Test]
+        public void Set_Null_Throws()
+        {
+            var service = new SaveService(new MemorySaveStore());
+            service.Load("world-1");
+
+            Assert.Throws<System.ArgumentNullException>(() => service.Set<StationSaveData>("station", null));
+        }
+
+        [Test]
         public void Save_BeforeLoad_Throws()
         {
             var service = new SaveService(new MemorySaveStore());

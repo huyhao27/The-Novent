@@ -16,6 +16,10 @@ the game was tested. Test the logic that decides outcomes; leave feel and visual
 | EditMode — pure logic, data, save round-trips | `Assets/_Project/Tests/EditMode/` · `Novent.Tests.EditMode.asmdef` (Editor platform only) | Fast, no scene |
 | PlayMode — MonoBehaviour lifecycle, physics, scene flow | `Assets/_Project/Tests/PlayMode/` · `Novent.Tests.PlayMode.asmdef` | Slower, enters play mode |
 
+Test-only MonoBehaviours (fake panels, poolables) go in `Assets/_Project/Tests/Support/`
+(`Novent.Tests.Support`, all platforms, `UNITY_INCLUDE_TESTS`): a MonoBehaviour compiled into the
+Editor-only EditMode assembly cannot be added — "Can't add script behaviour … because it is an editor script".
+
 Test asmdefs reference the module under test plus `UnityEngine.TestRunner`,
 `UnityEditor.TestRunner`, and set `"overrideReferences": true` with `nunit.framework.dll`,
 `"defineConstraints": ["UNITY_INCLUDE_TESTS"]`. One test class per production class:

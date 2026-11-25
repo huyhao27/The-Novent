@@ -3,8 +3,9 @@
 ## 2026-11-25 — chuẩn AI chung + kiến trúc lite (nhánh `chore/ai-standard`)
 - **Đã làm**: `.claude/` thành thư mục thật trong repo game (bỏ junction); thêm `rules/` theo path, hook `session_start`/`guard`,
   router mới (bỏ qua tin máy, mỗi skill 1 lần/session), agent explorer/reviewer, skill `novent-architecture` + `novent-test`,
-  `tools/check_kit.py`, `.mcp.json`, `.claude/README.md`. Core scaffold `Assets/_Project/Scripts/{Core,UI,Boot}` + 17 EditMode test.
-- **Verify**: compile 0 lỗi (MCP), `run_tests` EditMode 17/17 pass, `unity projects verify` ok, `check_kit.py` OK.
+  `tools/check_kit.py`, `.mcp.json`, `.claude/README.md`. Core scaffold `Assets/_Project/Scripts/{Core,UI,Boot}` + 38 EditMode test.
+- **Verify**: compile 0 lỗi (MCP), `run_tests` EditMode 38/38 pass (sau khi sửa 15 điểm review), `unity projects verify` ok, `check_kit.py` OK.
+- **Vướng**: session "Novent MVP planning notes" dừng giữa chừng khi định ghi `memory/meetings.md` — file chưa được tạo.
 - **Tiếp theo**: merge `chore/ai-standard` → main và báo team cài theo `.claude/README.md`; team chốt netcode (đề xuất NGO 2.x +
   Multiplayer Services); tạo scene MainMenu/Station/Expedition; prototype bay 8 hướng + Hãm.
 

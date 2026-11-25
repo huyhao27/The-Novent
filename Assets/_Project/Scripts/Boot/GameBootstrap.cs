@@ -22,7 +22,9 @@ namespace Novent.Boot
 
             Services.Register(new SaveService(new FileSaveStore()));
             Services.Register(new PoolService(root.transform));
-            // Replaced by the netcode session when the player hosts or joins; solo play stays offline.
+            // Placeholder until a world is created or loaded: the world flow then re-registers the
+            // session with the seed stored in that world's save (or the netcode session when hosting
+            // or joining), so the same world always regenerates the same map and loot.
             Services.Register<INetSession>(new OfflineSession(Environment.TickCount));
 
             Services.MarkReady();

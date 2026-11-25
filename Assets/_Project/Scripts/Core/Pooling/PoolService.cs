@@ -13,21 +13,29 @@ namespace Novent.Core.Pooling
         private const int DefaultCapacity = 8;
         private const int MaxPoolSize = 256;
 
-        private readonly Transform _root;
+        private readonly Transform _activeRoot;
+        private readonly Transform _storage;
         private readonly Dictionary<GameObject, ObjectPool<GameObject>> _poolsByPrefab = new();
         private readonly Dictionary<GameObject, ObjectPool<GameObject>> _poolsByInstance = new();
-        private readonly List<IPoolable> _poolableBuffer = new();
+        private readonly HashSet<GameObject> _idle = new();
 
         public PoolService(Transform root)
         {
-            _root = root;
+            _activeRoot = root;
+            // Idle instances live under an inactive parent: a new instance does not run Awake/OnEnable
+            // until it is first spawned, and returning one to storage disables it without SetActive churn.
+            _storage = new GameObject("[PoolStorage]").transform;
+            _storage.SetParent(root, false);
+            _storage.gameObject.SetActive(false);
         }
 
         public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation)
         {
             var pool = GetPool(prefab);
             var instance = pool.Get();
+            _idle.Remove(instance);
             _poolsByInstance[instance] = pool;
+            instance.transform.SetParent(_activeRoot, false);
             instance.transform.SetPositionAndRotation(position, rotation);
             instance.SetActive(true);
             NotifyPoolables(instance, spawned: true);
@@ -39,14 +47,23 @@ namespace Novent.Core.Pooling
             return Spawn(prefab.gameObject, position, rotation).GetComponent<T>();
         }
 
-        /// <summary>Returns an instance to its pool; objects that did not come from a pool are destroyed.</summary>
+        /// <summary>
+        /// Returns an instance to its pool. Despawning twice is ignored; objects that did not come
+        /// from a pool are destroyed.
+        /// </summary>
         public void Despawn(GameObject instance)
         {
-            if (instance == null)
+            if (ReferenceEquals(instance, null) || _idle.Contains(instance))
             {
                 return;
             }
-            if (!_poolsByInstance.Remove(instance, out var pool))
+            var pooled = _poolsByInstance.Remove(instance, out var pool);
+            if (instance == null)
+            {
+                // Destroyed elsewhere (scene cleanup, a script): only the bookkeeping entry is left to drop.
+                return;
+            }
+            if (!pooled)
             {
                 Object.Destroy(instance);
                 return;
@@ -76,8 +93,8 @@ namespace Novent.Core.Pooling
                 return pool;
             }
             pool = new ObjectPool<GameObject>(
-                createFunc: () => CreateInstance(prefab),
-                actionOnRelease: Deactivate,
+                createFunc: () => Object.Instantiate(prefab, _storage),
+                actionOnRelease: Store,
                 actionOnDestroy: Object.Destroy,
                 collectionCheck: Application.isEditor,
                 defaultCapacity: DefaultCapacity,
@@ -86,34 +103,30 @@ namespace Novent.Core.Pooling
             return pool;
         }
 
-        private GameObject CreateInstance(GameObject prefab)
+        private void Store(GameObject instance)
         {
-            var instance = Object.Instantiate(prefab, _root);
-            instance.SetActive(false);
-            return instance;
+            instance.transform.SetParent(_storage, false);
+            _idle.Add(instance);
         }
 
-        private void Deactivate(GameObject instance)
+        private static void NotifyPoolables(GameObject instance, bool spawned)
         {
-            instance.SetActive(false);
-            instance.transform.SetParent(_root, false);
-        }
-
-        private void NotifyPoolables(GameObject instance, bool spawned)
-        {
-            instance.GetComponentsInChildren(true, _poolableBuffer);
-            foreach (var poolable in _poolableBuffer)
+            // A pooled list per call: an OnSpawned that spawns another pooled object re-enters here.
+            using (ListPool<IPoolable>.Get(out var poolables))
             {
-                if (spawned)
+                instance.GetComponentsInChildren(true, poolables);
+                foreach (var poolable in poolables)
                 {
-                    poolable.OnSpawned();
-                }
-                else
-                {
-                    poolable.OnDespawned();
+                    if (spawned)
+                    {
+                        poolable.OnSpawned();
+                    }
+                    else
+                    {
+                        poolable.OnDespawned();
+                    }
                 }
             }
-            _poolableBuffer.Clear();
         }
     }
 }

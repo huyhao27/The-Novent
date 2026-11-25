@@ -48,8 +48,9 @@ namespace Novent.Core.Events
 
         public static void Publish(T evt)
         {
-            // Handlers run from a snapshot so a handler may unsubscribe itself mid-publish;
-            // the array is rebuilt only when the subscriber list changed, so publishing does not allocate.
+            // Handlers run from a snapshot so the list may change mid-publish; the array is rebuilt
+            // only when the subscriber list changed, so publishing does not allocate. Handlers added
+            // during a publish receive the next event, not this one.
             if (s_isDirty)
             {
                 s_snapshot = s_handlers.ToArray();
@@ -58,6 +59,11 @@ namespace Novent.Core.Events
             var handlers = s_snapshot;
             for (var i = 0; i < handlers.Length; i++)
             {
+                // A handler removed earlier in this same publish (its object was destroyed) must not run.
+                if (s_isDirty && !s_handlers.Contains(handlers[i]))
+                {
+                    continue;
+                }
                 try
                 {
                     handlers[i](evt);
@@ -73,7 +79,8 @@ namespace Novent.Core.Events
         {
             s_handlers.Clear();
             s_snapshot = Array.Empty<Action<T>>();
-            s_isDirty = false;
+            // Dirty, so a publish already running skips the handlers it still holds in its snapshot.
+            s_isDirty = true;
         }
     }
 

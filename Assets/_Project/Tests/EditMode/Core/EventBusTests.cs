@@ -78,6 +78,32 @@ namespace Novent.Tests.Core
         }
 
         [Test]
+        public void Publish_HandlerUnsubscribesLaterHandler_LaterHandlerSkipped()
+        {
+            var laterCalls = 0;
+            void Later(PingEvent e) => laterCalls++;
+            void Earlier(PingEvent e) => EventBus<PingEvent>.Unsubscribe(Later);
+            EventBus<PingEvent>.Subscribe(Earlier);
+            EventBus<PingEvent>.Subscribe(Later);
+
+            EventBus<PingEvent>.Publish(new PingEvent(1));
+
+            Assert.That(laterCalls, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Publish_HandlerClearsBus_RemainingHandlersSkipped()
+        {
+            var laterCalls = 0;
+            EventBus<PingEvent>.Subscribe(_ => EventBus<PingEvent>.Clear());
+            EventBus<PingEvent>.Subscribe(_ => laterCalls++);
+
+            EventBus<PingEvent>.Publish(new PingEvent(1));
+
+            Assert.That(laterCalls, Is.EqualTo(0));
+        }
+
+        [Test]
         public void ClearAll_RemovesEveryHandler()
         {
             EventBus<PingEvent>.Subscribe(_ => { });

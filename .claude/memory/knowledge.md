@@ -30,7 +30,12 @@ Thông tin riêng từng máy (đường dẫn Unity, tool cài riêng) không g
   tham chiếu tất cả. Service tạo duy nhất ở `GameBootstrap` (`RuntimeInitializeOnLoadMethod BeforeSceneLoad`), lấy qua `Services.Get<T>()`.
   Chi tiết: `.claude/rules/architecture.md`, skill `novent-architecture`.
 - **Đã có** (`Assets/_Project/Scripts/`): `Services`, `EventBus<T>`, `PoolService`, `SaveService` (JSON, có `version`), `SeededRandom`,
-  `INetSession`/`OfflineSession`/`PlayerId`, `Panel`/`PanelService`/`PanelRegistry`/`UIRoot`. 17 EditMode test pass (2026-11-25).
+  `INetSession`/`OfflineSession`/`PlayerId`, `Panel`/`PanelService`/`PanelRegistry`/`UIRoot`. 38 EditMode test pass (2026-11-26),
+  sau khi sửa theo review: pool tái nhập/despawn hai lần, Load file save hỏng không ghi đè, UIRoot `DefaultExecutionOrder(-100)`.
+- **Bẫy**: MonoBehaviour dùng trong test phải ở `Tests/Support` (`Novent.Tests.Support`, mọi platform) — đặt trong assembly
+  EditMode (chỉ Editor) thì `AddComponent` báo "is an editor script" và test chết vì NullReference. Gặp 2026-11-26.
+- **Bất biến**: `SeededRandomTests.KnownSeed_ProducesPinnedValues` ghim giá trị sinh từ seed; đổi thuật toán random/Fork = mọi thế giới
+  đã lưu sinh khác đi → chỉ đổi cùng lúc bump version save.
 - **Vì sao**: kiến trúc "lite" — một composition root, phụ thuộc một chiều, logic là C# thuần để test và để đổi netcode rẻ. User chọn 2026-11-25.
 - **Đã cân nhắc và bỏ**: DI container (Zenject ngừng phát triển; VContainer/Reflex thêm độ khó cho team), service = ScriptableObject + asset
   danh sách (quên đăng ký → null, lỗi phổ biến nhất), locator dùng reflection (khó debug, rủi ro IL2CPP stripping), một file `GameEvents.cs`

@@ -3,6 +3,8 @@
     "rootNamespace": "Novent.Tests",
     "references": [
         "Novent.Core",
+        "Novent.UI",
+        "Novent.Tests.Support",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

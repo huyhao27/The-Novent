@@ -23,26 +23,34 @@ namespace Novent.Core.Save
 
         public string Slot { get; private set; }
 
-        /// <summary>Opens a slot. Returns false when nothing was saved there yet (sections start empty).</summary>
+        /// <summary>
+        /// Opens a slot. Returns false when nothing was saved there yet (sections start empty).
+        /// Throws on an unreadable or too-new save and leaves the previously open slot untouched,
+        /// so a later Save() cannot overwrite the damaged file with an empty one.
+        /// </summary>
         public bool Load(string slot)
         {
-            Slot = slot;
-            _sections.Clear();
             if (!_store.TryRead(slot, out var json) || string.IsNullOrEmpty(json))
             {
+                Open(slot, null);
                 return false;
             }
-            var file = JsonUtility.FromJson<SaveFile>(json);
-            if (file.version > CurrentVersion)
+            SaveFile file;
+            try
+            {
+                file = JsonUtility.FromJson<SaveFile>(json);
+            }
+            catch (ArgumentException exception)
+            {
+                throw new InvalidOperationException($"Save '{slot}' is not valid JSON; the file was left as it is.", exception);
+            }
+            if (file == null || file.version < 1 || file.version > CurrentVersion)
             {
                 throw new InvalidOperationException(
-                    $"Save '{slot}' is version {file.version}; this build reads up to {CurrentVersion}.");
+                    $"Save '{slot}' has version {file?.version}; this build reads 1 to {CurrentVersion}.");
             }
             Migrate(file);
-            foreach (var entry in file.entries)
-            {
-                _sections[entry.key] = entry.json;
-            }
+            Open(slot, file);
             return true;
         }
 
@@ -60,12 +68,20 @@ namespace Novent.Core.Save
             _store.Write(Slot, JsonUtility.ToJson(file));
         }
 
-        public void Set<T>(string key, T section)
+        /// <summary>
+        /// Stores a section. T is a [Serializable] class with public (or [SerializeField]) fields —
+        /// JsonUtility skips properties and writes "{}" for a bare list or dictionary.
+        /// </summary>
+        public void Set<T>(string key, T section) where T : class
         {
+            if (section == null)
+            {
+                throw new ArgumentNullException(nameof(section));
+            }
             _sections[key] = JsonUtility.ToJson(section);
         }
 
-        public bool TryGet<T>(string key, out T section)
+        public bool TryGet<T>(string key, out T section) where T : class
         {
             if (_sections.TryGetValue(key, out var json))
             {
@@ -84,6 +100,20 @@ namespace Novent.Core.Save
         public void Remove(string key)
         {
             _sections.Remove(key);
+        }
+
+        private void Open(string slot, SaveFile file)
+        {
+            Slot = slot;
+            _sections.Clear();
+            if (file == null)
+            {
+                return;
+            }
+            foreach (var entry in file.entries)
+            {
+                _sections[entry.key] = entry.json;
+            }
         }
 
         private static void Migrate(SaveFile file)

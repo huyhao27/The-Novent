@@ -43,6 +43,12 @@ small step, compile) — testing through a scene for arithmetic is slow and flak
 Add the module under test to `references`. PlayMode: same in `Tests/PlayMode/` with name
 `Novent.Tests.PlayMode` and `"includePlatforms": []`.
 
+A test needs its own MonoBehaviour (a fake `Panel`, an `IPoolable`)? Put it in
+`Assets/_Project/Tests/Support/` (assembly `Novent.Tests.Support`, already referenced). In the
+Editor-only test assembly `AddComponent` fails with "it is an editor script" and the test then dies
+on a NullReferenceException far from the cause. Set private serialized fields of a test asset with
+`UnityEditor.SerializedObject` (see `Tests/EditMode/UI/PanelServiceTests.cs`).
+
 ## 3. Write the test
 
 ```csharp

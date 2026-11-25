@@ -35,6 +35,17 @@ namespace Novent.Tests.Core
             Assert.That(world.Fork("loot").Seed, Is.Not.EqualTo(world.Fork("map-chunks").Seed));
         }
 
+        // Pinned outputs: every machine (and every future build) must produce exactly these, or hosts
+        // and clients generate different worlds. Change them only together with a save-version bump.
+        [Test]
+        public void KnownSeed_ProducesPinnedValues()
+        {
+            var world = new SeededRandom(1234);
+
+            Assert.That(world.Range(0, 1000), Is.EqualTo(399));
+            Assert.That(world.Fork("loot").Seed, Is.EqualTo(1736636289));
+        }
+
         [Test]
         public void Range_Float_StaysInBounds()
         {

@@ -55,6 +55,8 @@ unsubscribe in `OnDisable`.
 - Saved state: a `[Serializable]` `<Feature>SaveData` class written through `SaveService` with a
   stable key. World slot belongs to the host; each player keeps a profile slot. Changing a saved
   shape → bump `SaveService.CurrentVersion` and add a migration step.
+- The world seed is saved with the world; the session for that world is created from it, never
+  from a fresh `TickCount`, so a reloaded world regenerates the same map and loot.
 - IDs designers edit are strings; enums stored as ints are append-only.
 
 ## Pools and spawning

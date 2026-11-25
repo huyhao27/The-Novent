@@ -22,7 +22,14 @@ namespace Novent.UI
             _parent = parent;
         }
 
-        public Panel Top => _stack.Count > 0 ? _stack[^1] : null;
+        public Panel Top
+        {
+            get
+            {
+                PruneDestroyed();
+                return _stack.Count > 0 ? _stack[^1] : null;
+            }
+        }
 
         public T Open<T>() where T : Panel
         {
@@ -72,12 +79,19 @@ namespace Novent.UI
 
         public bool IsOpen<T>() where T : Panel
         {
-            return _instances.TryGetValue(typeof(T), out var panel) && panel.IsOpen;
+            return _instances.TryGetValue(typeof(T), out var panel) && panel != null && panel.IsOpen;
+        }
+
+        // A panel destroyed by something else (its scene object removed) must not block Back/Esc
+        // or be returned from the cache; "== null" is Unity's destroyed-object check.
+        private void PruneDestroyed()
+        {
+            _stack.RemoveAll(panel => panel == null);
         }
 
         private T GetOrCreate<T>() where T : Panel
         {
-            if (_instances.TryGetValue(typeof(T), out var existing))
+            if (_instances.TryGetValue(typeof(T), out var existing) && existing != null)
             {
                 return (T)existing;
             }

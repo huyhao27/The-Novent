@@ -7,6 +7,8 @@ namespace Novent.UI
     /// Put on the scene's main Canvas. Owns the PanelService for that scene and registers it,
     /// so gameplay and input code reach panels through Services.Get&lt;PanelService&gt;().
     /// </summary>
+    // Registers before default-order scripts run Awake, so they can cache the PanelService there.
+    [DefaultExecutionOrder(-100)]
     public sealed class UIRoot : MonoBehaviour
     {
         [SerializeField] private PanelRegistry _registry;
