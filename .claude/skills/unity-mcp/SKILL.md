@@ -52,7 +52,9 @@ Domain reload drops the connection for a few seconds; retry once, then wait.
 | Enter / leave play mode | `mcp__UnityMCP__manage_editor` (`play`, `stop`, `pause`) |
 | Run tests | `mcp__UnityMCP__run_tests` `{mode: "EditMode", include_failed_tests: true}` (filter with `test_names`/`assembly_names`) → job id → poll `mcp__UnityMCP__get_test_job` `{job_id}` |
 | Find objects | `mcp__UnityMCP__find_gameobjects` (by name/tag/component/path, paged) |
-| Scene hierarchy / save / load / screenshot | `mcp__UnityMCP__manage_scene` (`get_hierarchy`, `save`, `load`, `screenshot`, `get_build_settings`) |
+| Scene hierarchy / save / load | `mcp__UnityMCP__manage_scene` (`get_hierarchy`, `save`, `load`, `get_build_settings`) |
+| Add/remove scenes in Build Settings | `mcp__UnityMCP__manage_build` (action `scenes`) |
+| Screenshot of the Game or Scene view | `mcp__UnityMCP__manage_camera` (`screenshot`; `capture_source: scene_view` for the Scene view; `include_image: true` to see it inline) |
 | Create / modify / delete a GameObject | `mcp__UnityMCP__manage_gameobject` (`create`, `modify`, `delete`, `duplicate`) |
 | Add / remove / set a component field | `mcp__UnityMCP__manage_components` |
 | Prefab open / edit / save | `mcp__UnityMCP__manage_prefabs` |
@@ -82,7 +84,9 @@ delete assets, touch files outside the project, or change `ProjectSettings`.
 
 ## 4. Screenshots and "does it look right?"
 
-`mcp__UnityMCP__manage_scene` `screenshot` (or `mcp__UnityMCP__manage_camera`) gives an image of the Game/Scene view.
+`mcp__UnityMCP__manage_camera` `screenshot` gives an image of the Game view (overlay UI included when no
+camera is named) or, with `capture_source: scene_view`, the Scene view; `include_image: true` returns
+it inline (≤ 640 px by default).
 Use it to verify layout/UI changes; describe what you see and what you expected. A
 screenshot is evidence for "it renders", not for "the logic works".
 

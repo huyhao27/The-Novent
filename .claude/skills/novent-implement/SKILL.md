@@ -49,7 +49,7 @@ and naming, use the `novent-code-style` skill.
 |---|---|
 | New MonoBehaviour | Add it to the GameObject/prefab (MCP `mcp__UnityMCP__manage_components`) and assign its references, or give the user exact click steps |
 | New ScriptableObject type | Add `[CreateAssetMenu]`, create the asset (`mcp__UnityMCP__manage_asset`), assign it where it is read |
-| New scene | Add it to Build Settings, or `SceneManager.LoadScene` fails in the build |
+| New scene | Add it to Build Settings (`mcp__UnityMCP__manage_build` action `scenes`), or `SceneManager.LoadScene` fails in the build |
 | Wiring into a scene/prefab | `mcp__UnityMCP__manage_gameobject` / `mcp__UnityMCP__manage_prefabs`, then save. Never hand-edit `.unity`/`.prefab`/`.asset` YAML |
 | Moving or deleting a `.cs` / asset | Move or delete its `.meta` with it (or use `mcp__UnityMCP__manage_asset`) — otherwise every reference breaks |
 | Renaming a `[SerializeField]` field | Add `[FormerlySerializedAs("old")]`, or the value is silently dropped everywhere |
