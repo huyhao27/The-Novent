@@ -1,0 +1,4 @@
+[submodule "Assets/NoventAssets"]
+	path = Assets/NoventAssets
+	url = https://github.com/huyhao27/the-novent-assets
+	branch = main
