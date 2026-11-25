@@ -27,11 +27,18 @@ git submodule update --init --recursive
 
 | Đường dẫn | Là gì |
 |---|---|
-| `Assets/_Project/` | Code, scene, prefab, data của game (namespace `Novent.<Hệ thống>`) — tạo khi có script đầu tiên |
-| `Assets/Scenes/SampleScene.unity` | Scene mẫu của template, thay khi có scene Boot |
+| `Assets/_Project/Scripts/` | Code game theo module: `Core` (service dùng chung), `Gameplay/<Hệ thống>`, `UI`, `Net`, `Boot` — mỗi module một asmdef, namespace `Novent.<Module>` |
+| `Assets/_Project/Tests/` | EditMode/PlayMode test (Test Runner) |
+| `Assets/Scenes/SampleScene.unity` | Scene mẫu của template, thay khi có scene của game |
 | `Assets/NoventAssets/` | **Submodule** `huyhao27/the-novent-assets` — art, anim, effect, sound |
 | `Assets/Settings/` | URP pipeline/renderer assets |
 | `Docs/` | GDD và tài liệu |
+| `.claude/` | Bộ AI chung cho Claude Code: luật code, skill, hook, memory của project — xem `.claude/README.md` |
+
+## Code cùng Claude Code
+
+Cả nhóm dùng chung bộ trong `.claude/`. Cài một lần theo [`.claude/README.md`](.claude/README.md)
+(Python 3, MCP for Unity → Start Server, trust thư mục), sau đó mở Claude Code ở thư mục repo là dùng được.
 
 ### Làm việc với submodule asset
 
