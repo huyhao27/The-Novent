@@ -139,3 +139,6 @@ crashlytics-build.properties
 
 # IDE (each dev chooses own)
 .vscode/
+
+# Claude Code — personal notes and settings stay local
+CLAUDE.local.md

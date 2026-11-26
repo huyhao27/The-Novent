@@ -1,0 +1,19 @@
+{
+    "name": "Novent.Tests.Support",
+    "rootNamespace": "Novent.Tests.Support",
+    "references": [
+        "Novent.Core",
+        "Novent.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
