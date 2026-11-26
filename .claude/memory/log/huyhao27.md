@@ -1,5 +1,13 @@
 # Session log — huyhao27 (mới nhất trên cùng, giữ ≤ 15 mục)
 
+## 2026-11-26 — kế hoạch khởi động MVP (nhánh `chore/mvp-kickoff-plan`)
+- **Đã làm**: `plans/mvp-kickoff.md` v3 — chốt đề xuất NGO 2.x + Multiplayer Services (FishNet là đường lùi), kiến trúc asmdef theo feature
+  + `IGameModule`/`IRequestChannel`, 7 phase (feature freeze 20/12, `mvp-1.0` 31/12), owner mảng vs người làm, 122 task Must/Should/Plan.
+  Ghi Sheet GDD tab `List Tasks` (sheetId 900).
+- **Verify**: đọc lại Sheet (header, ngày dd/mm/yyyy, số ngày, 123 dòng); chưa có code nên không compile.
+- **Tiếp theo**: báo team ở check-in 28/11 (mạng ngay từ đầu ngược với họp 23/11); khi duyệt → đưa netcode + asmdef theo feature vào `knowledge.md`; làm P0-05, P0-01.
+- **Vướng**: giả định ~6 ngày/tuần, 6–7 giờ/ngày chưa được team xác nhận.
+
 ## 2026-11-25 — chuẩn AI chung + kiến trúc lite (nhánh `chore/ai-standard`)
 - **Đã làm**: `.claude/` thành thư mục thật trong repo game (bỏ junction); thêm `rules/` theo path, hook `session_start`/`guard`,
   router mới (bỏ qua tin máy, mỗi skill 1 lần/session), agent explorer/reviewer, skill `novent-architecture` + `novent-test`,
