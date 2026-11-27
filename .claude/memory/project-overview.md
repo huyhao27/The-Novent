@@ -18,7 +18,7 @@
 | Bối cảnh | Tàu mẹ Cradle nổ; người chơi tỉnh dậy trên Station Ember trôi giữa bãi vỡ The Wake |
 | Tiền | **Tally** là tiền duy nhất. Không XP, không tiền thứ hai |
 | Chỉ số sống | **Oxy = thời gian + máu**, không có thanh máu riêng |
-| Nhóm | 1 Game Designer, 4 Dev, 1 Artist 2D. Tab Ref: Hào, Vinh, Hoàng, Huy (Huy = GD/Lead) |
+| Nhóm | 1 Game Designer, 4 Dev, 1 Artist 2D. Tab Ref: Hào, Vinh, Hoàng, Huy (Huy = GD) |
 | Mốc thời gian | **Chưa có, chờ Lead** |
 
 ## 2. Vòng chơi
